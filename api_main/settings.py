@@ -63,8 +63,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['localhost']
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = ['8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'),]
+CSRF_TRUSTED_ORIGINS = ['https://8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io']
 
 # Application definition
 
@@ -87,6 +87,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     'corsheaders',
+    'followers',
+    'likes',
+    'posts',
+    'comments',
+    'profiles',
 ]
 SITE_ID = 1
 MIDDLEWARE = [
