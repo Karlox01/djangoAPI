@@ -28,7 +28,7 @@ if 'CLOUDINARY_URL' in os.environ:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 else:
     # Cloudinary settings for development (Gitpod)
-    CLOUDINARY_STORAGE = {}
+    CLOUDINARY_STORAGE = {'CLOUDINARY_URL': 'cloudinary://648332867327727:WxXSO6DNMM3qcpsDI3428LsPsNE@dzchfcdfl'}
     MEDIA_URL = '/media/'
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
@@ -189,6 +189,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
