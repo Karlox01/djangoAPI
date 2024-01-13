@@ -19,14 +19,20 @@ if os.path.exists('env.py'):
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
-}
+if 'CLOUDINARY_URL' in os.environ:
+    # Cloudinary settings for production (Heroku)
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
+    }
+    MEDIA_URL = '/media/'
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # Cloudinary settings for development (Gitpod)
+    CLOUDINARY_STORAGE = {'CLOUDINARY_URL': 'cloudinary://648332867327727:WxXSO6DNMM3qcpsDI3428LsPsNE@dzchfcdfl'}
+    MEDIA_URL = '/media/'
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+# Below first is for sessions in development, 2nd is for tokens in production
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [(
         'rest_framework.authentication.SessionAuthentication'
@@ -63,7 +69,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io',  'localhost', os.environ.get('ALLOWED_HOST'),]
+ALLOWED_HOSTS = ['8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'), 'apifinalproject-bcabd5b820ec.herokuapp.com',]
 CSRF_TRUSTED_ORIGINS = ['https://8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io', 'https://api-finalproject-2c3881ff5b7f.herokuapp.com/']
 
 # Application definition
@@ -95,26 +101,23 @@ INSTALLED_APPS = [
 ]
 SITE_ID = 1
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Make sure it comes first
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # If you're using corsheaders, place it early
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Add allauth middleware here
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
     extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
     CORS_ALLOWED_ORIGIN_REGEXES = [
         rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
     ]
-
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'api_main.urls'
 
@@ -147,8 +150,11 @@ if 'DEV' in os.environ:
         }
     }
 else:
+    # Use dj_database_url to parse the DATABASE_URL
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3')
+        )
     }
 
 # Password validation
