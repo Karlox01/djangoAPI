@@ -118,7 +118,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'https://8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io',
     'https://api-finalproject-2c3881ff5b7f.herokuapp.com',
-    'https://https://3000-karlox01-watchforum-zupz42vqjc0.ws-eu107.gitpod.io',
+    'https://3000-karlox01-watchforum-zupz42vqjc0.ws-eu107.gitpod.io',
     'https://djangoapitwo-c793e711fc8c.herokuapp.com',
 ]
 
