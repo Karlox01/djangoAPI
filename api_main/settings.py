@@ -115,12 +115,7 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ]
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    'https://8000-karlox01-djangoapi-h70sckmvs56.ws-eu107.gitpod.io',
-    'https://api-finalproject-2c3881ff5b7f.herokuapp.com',
-    'https://3000-karlox01-watchforum-zupz42vqjc0.ws-eu107.gitpod.io',
-    'https://djangoapitwo-c793e711fc8c.herokuapp.com',
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 ROOT_URLCONF = 'api_main.urls'
