@@ -14,6 +14,7 @@ from pathlib import Path
 import os 
 import dj_database_url
 
+
 if os.path.exists('env.py'):
     import env
 
@@ -179,7 +180,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'GMT'
 
 USE_I18N = True
 
