@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Profile
 from followers.models import Follower
-
+from posts.serializers import PostSerializer
+from comments.serializers import CommentSerializer
 
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -11,7 +12,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     followers_count = serializers.ReadOnlyField()
     following_count = serializers.ReadOnlyField()
     user_joined_at = serializers.DateTimeField(source='owner.date_joined', format="%Y-%m-%dT%H:%M:%SZ")
-
+    posts = PostSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     def get_is_owner(self, obj):
         request = self.context['request']
@@ -28,9 +30,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        # fields = '__all__' this would work if you want to specify all of the fields
         fields = [
             'id', 'owner', 'created_at', 'name',
             'content', 'image', 'is_owner', 'following_id',
             'posts_count', 'followers_count', 'following_count', 'user_joined_at',
+            'posts', 'comments',  # Include the new fields
         ]
