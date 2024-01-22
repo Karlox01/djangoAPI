@@ -23,19 +23,21 @@ class PostSerializer(serializers.ModelSerializer):
     )
 
     def create(self, validated_data):
-        uploaded_images = validated_data.pop("uploaded_images")
+        uploaded_images = validated_data.pop("uploaded_images", [])
         post = Post.objects.create(**validated_data)
+
         for image in uploaded_images:
             Image.objects.create(post=post, image=image)
+
         return post
 
     def validate_uploaded_images(self, images_data):
         for image_data in images_data:
             if image_data.size > 2 * 1024 * 1024:
                 raise serializers.ValidationError('Image size larger than 2MB!')
-            if image_data.image.height > 4096:
+            if image_data.height > 4096:
                 raise serializers.ValidationError('Image height larger than 4096px!')
-            if image_data.image.width > 4096:
+            if image_data.width > 4096:
                 raise serializers.ValidationError('Image width larger than 4096px!')
         return images_data
 
