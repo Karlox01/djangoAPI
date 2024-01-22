@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Post(models.Model):
     """
     Post model, related to 'owner', i.e. a User instance.
@@ -29,10 +28,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
-    image = models.ImageField(
-        upload_to='images/', default='../default_post_rgq6aq', blank=True
-    )
-
+    images = models.ManyToManyField('Image', related_name='posts', blank=True)
     image_filter = models.CharField(
         max_length=32, choices=image_filter_choices, default='normal'
     )
@@ -42,3 +38,13 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.id} {self.title}'
+
+class Image(models.Model):
+    """
+    Image model to store images related to a Post.
+    """
+    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='images/', default='../default_post_rgq6aq', blank=True)
+
+    def __str__(self):
+        return f'Image for Post {self.post.id}'
