@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from posts.models import Post
+from posts.models import Post, Image
 from likes.models import Like
 
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ['id', 'image']
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -11,19 +16,28 @@ class PostSerializer(serializers.ModelSerializer):
     like_id = serializers.SerializerMethodField()
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
+    images = ImageSerializer(many=True, read_only=True)
 
-    def validate_image(self, value):
-        if value.size > 2 * 1024 * 1024:
-            raise serializers.ValidationError('Image size larger than 2MB!')
-        if value.image.height > 4096:
-            raise serializers.ValidationError(
+    def create(self, validated_data):
+        images_data = self.context['request'].FILES.getlist('images')
+        post = Post.objects.create(**validated_data)
+        for image_data in images_data:
+            Image.objects.create(post=post, image=image_data)
+        return post
+
+    def validate_images(self, images_data):
+        for image_data in images_data:
+            if image_data.size > 2 * 1024 * 1024:
+                raise serializers.ValidationError('Image size larger than 2MB!')
+            if image_data.image.height > 4096:
+                raise serializers.ValidationError(
                 'Image height larger than 4096px!'
-            )
-        if value.image.width > 4096:
-            raise serializers.ValidationError(
+                )
+            if image_data.image.width > 4096:
+                raise serializers.ValidationError(
                 'Image width larger than 4096px!'
-            )
-        return value
+                )
+        return images_data
 
     def get_is_owner(self, obj):
         request = self.context['request']

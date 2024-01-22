@@ -29,8 +29,8 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
-    image = models.ImageField(
-        upload_to='images/', default='../default_post_rgq6aq', blank=True
+    images = models.ManyToManyField(
+        'Image', related_name='post_images', blank=True
     )
 
     image_filter = models.CharField(
@@ -42,3 +42,12 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.id} {self.title}'
+
+class Image(models.Model):
+    post = models.ForeignKey(
+        Post, related_name='images', on_delete=models.CASCADE
+    )
+    image = models.ImageField(upload_to='images/')
+
+    def __str__(self):
+        return f'Image for Post {self.post.id}'
