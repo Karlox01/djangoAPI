@@ -24,6 +24,9 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
+    uploaded_images = models.ImageField(
+        upload_to='images/', blank=True, null=True, default=''
+    )
     image_filter = models.CharField(
         max_length=32, choices=image_filter_choices, default='normal'
     )

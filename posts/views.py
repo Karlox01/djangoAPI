@@ -1,3 +1,4 @@
+# views.py
 from django.db.models import Count
 from rest_framework import generics, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
@@ -34,8 +35,7 @@ class PostList(generics.ListCreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        uploaded_images = self.request.FILES.getlist('uploaded_images')
-        serializer.save(owner=self.request.user, uploaded_images=uploaded_images)
+        serializer.save(owner=self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -45,7 +45,6 @@ class PostList(generics.ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer

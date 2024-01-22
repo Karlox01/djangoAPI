@@ -1,3 +1,4 @@
+# serializers.py
 from rest_framework import serializers
 from posts.models import Post, Image
 from likes.models import Like
@@ -16,13 +17,16 @@ class PostSerializer(serializers.ModelSerializer):
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
     images = ImageSerializer(many=True, read_only=True)
-    
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True
+    )
 
     def create(self, validated_data):
-        images_data = self.context['request'].FILES.getlist('uploaded_images')
+        uploaded_images = validated_data.pop("uploaded_images")
         post = Post.objects.create(**validated_data)
-        for image_data in images_data:
-            Image.objects.create(post=post, image=image_data)
+        for image in uploaded_images:
+            Image.objects.create(post=post, image=image)
         return post
 
     def validate_uploaded_images(self, images_data):
