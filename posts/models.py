@@ -43,7 +43,7 @@ class Image(models.Model):
     """
     Image model to store images related to a Post.
     """
-    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='post_images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images/', default='../default_post_rgq6aq', blank=True)
 
     def __str__(self):
