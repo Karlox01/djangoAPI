@@ -2,7 +2,7 @@ from django.db.models import Count
 from rest_framework import generics, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from api_main.permissions import IsOwnerOrReadOnly
-from .models import Post
+from .models import Post, Image
 from .serializers import PostSerializer
 from rest_framework.response import Response
 
@@ -34,7 +34,8 @@ class PostList(generics.ListCreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        uploaded_images = self.request.FILES.getlist('uploaded_images')
+        serializer.save(owner=self.request.user, uploaded_images=uploaded_images)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()

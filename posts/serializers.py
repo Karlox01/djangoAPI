@@ -16,10 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
     images = ImageSerializer(many=True, read_only=True)
-    uploaded_images = serializers.ListField(
-        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
-        write_only=True
-    )
+    
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES.getlist('uploaded_images')
