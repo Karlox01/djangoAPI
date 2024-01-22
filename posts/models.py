@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Post(models.Model):
-    # ... (your existing code)
-
     image_filter_choices = [
         ('_1977', '1977'), 
         ('brannan', 'Brannan'),

@@ -1,4 +1,3 @@
-# views.py
 from django.db.models import Count
 from rest_framework import generics, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,10 +7,6 @@ from .serializers import PostSerializer
 from rest_framework.response import Response
 
 class PostList(generics.ListCreateAPIView):
-    """
-    List posts or create a post if logged in
-    The perform_create method associates the post with the logged-in user.
-    """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Post.objects.annotate(
@@ -43,7 +38,7 @@ class PostList(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
-        data['images'] = request.FILES.getlist('images')
+        data['uploaded_images'] = request.FILES.getlist('uploaded_images')
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -52,9 +47,6 @@ class PostList(generics.ListCreateAPIView):
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve a post and edit or delete it if you own it.
-    """
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Post.objects.annotate(

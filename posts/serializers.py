@@ -1,14 +1,11 @@
-# serializers.py
 from rest_framework import serializers
 from posts.models import Post, Image
 from likes.models import Like
-
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ['id', 'image']
-
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -19,15 +16,19 @@ class PostSerializer(serializers.ModelSerializer):
     likes_count = serializers.ReadOnlyField()
     comments_count = serializers.ReadOnlyField()
     images = ImageSerializer(many=True, read_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True
+    )
 
     def create(self, validated_data):
-        images_data = self.context['request'].FILES.getlist('images')
+        images_data = self.context['request'].FILES.getlist('uploaded_images')
         post = Post.objects.create(**validated_data)
         for image_data in images_data:
             Image.objects.create(post=post, image=image_data)
         return post
 
-    def validate_images(self, images_data):
+    def validate_uploaded_images(self, images_data):
         for image_data in images_data:
             if image_data.size > 2 * 1024 * 1024:
                 raise serializers.ValidationError('Image size larger than 2MB!')
@@ -54,5 +55,5 @@ class PostSerializer(serializers.ModelSerializer):
             'id', 'owner', 'is_owner', 'profile_id',
             'profile_image', 'created_at', 'updated_at',
             'title', 'content', 'image_filter',
-            'like_id', 'likes_count', 'comments_count', 'images',
+            'like_id', 'likes_count', 'comments_count', 'images', 'uploaded_images',
         ]
