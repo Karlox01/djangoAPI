@@ -106,7 +106,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 # from rest_framework.views import APIView
 # from .models import Post
 # from .serializers import PostSerializer 
-# from api_main.permissions import IsOwnerOrReadOnly
+# from drf_api.permissions import IsOwnerOrReadOnly
 
 # class PostList(APIView):
 #     serializer_class = PostSerializer
