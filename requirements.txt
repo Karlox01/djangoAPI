@@ -10,7 +10,7 @@ django-allauth==0.44.0
 django-cloudinary-storage==0.3.0
 django-cors-headers==4.3.1
 django-filter==23.5
-djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
 docstring-parser==0.15
 oauthlib==3.2.2
 pillow==10.2.0
