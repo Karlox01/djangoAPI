@@ -30,7 +30,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     images = models.ManyToManyField(
-        'Image', related_name='post_images', blank=True
+        'Image', related_name='posts', blank=True
     )
 
     image_filter = models.CharField(
