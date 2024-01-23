@@ -48,6 +48,15 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
 
+    def perform_update(self, serializer):
+        # Handle deleted images
+        deleted_images = self.request.data.get('deletedImages', [])
+        for image_id in deleted_images:
+            PostImage.objects.filter(post=serializer.instance, id=image_id).delete()
+
+        # Continue with the update
+        serializer.save()
+
 
 
 
