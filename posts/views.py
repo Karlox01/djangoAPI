@@ -2,15 +2,10 @@ from django.db.models import Count
 from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from api_main.permissions import IsOwnerOrReadOnly
-from .models import Post
-from .serializers import PostSerializer
-
+from .models import Post, PostImage
+from .serializers import PostSerializer, PostImageSerializer
 
 class PostList(generics.ListCreateAPIView):
-    """
-    List posts or create a post if logged in
-    The perform_create method associates the post with the logged in user.
-    """
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Post.objects.annotate(
@@ -26,7 +21,6 @@ class PostList(generics.ListCreateAPIView):
         'owner__followed__owner__profile',
         'likes__owner__profile',
         'owner__profile',
-
     ]
     search_fields = [
         'owner__username',
@@ -39,13 +33,14 @@ class PostList(generics.ListCreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        post = serializer.save(owner=self.request.user)
 
+        # Handle multiple images (modify as needed)
+        images_data = self.request.data.getlist('images')
+        for image_data in images_data:
+            PostImage.objects.create(post=post, image=image_data)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve a post and edit or delete it if you own it.
-    """
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Post.objects.annotate(
