@@ -47,6 +47,22 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
+
+    def perform_update(self, serializer):
+        # Handle deleted images
+        deleted_images = self.request.data.get('deletedImages', [])
+        if deleted_images:
+            for image_id in deleted_images:
+                try:
+                    # Use get instead of filter to retrieve a single object
+                    image_to_delete = PostImage.objects.get(post=serializer.instance, id=image_id)
+                    image_to_delete.delete()
+                except PostImage.DoesNotExist:
+                    # Handle the case where the image does not exist
+                    pass
+
+        # Continue with the update
+        serializer.save()
     
 
 
