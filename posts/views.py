@@ -51,20 +51,19 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
     # Handle deleted images
         deleted_images = self.request.data.get('deletedImages', [])
-
-    try:
-        deleted_image_ids = [int(image_id) for image_id in deleted_images]
-    except ValueError as e:
+        try:
+            deleted_image_ids = [int(image_id) for image_id in deleted_images]
+        except ValueError as e:
         # Handle the case where a non-integer value is in deletedImages
         # You might want to log the error for debugging
-        print(f"Error converting to int: {e}")
-        deleted_image_ids = []
+            print(f"Error converting to int: {e}")
+            deleted_image_ids = []
 
-    for image_id in deleted_image_ids:
-        PostImage.objects.filter(post=serializer.instance, id=image_id).delete()
+        for image_id in deleted_image_ids:
+            PostImage.objects.filter(post=serializer.instance, id=image_id).delete()
 
-    # Continue with the update
-    serializer.save()
+         # Continue with the update
+        serializer.save()
 
 
 
