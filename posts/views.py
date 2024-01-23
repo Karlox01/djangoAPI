@@ -48,22 +48,25 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
 
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Post.objects.annotate(
+        likes_count=Count('likes', distinct=True),
+        comments_count=Count('comment', distinct=True)
+    ).order_by('-created_at')
+
     def perform_update(self, serializer):
-    # Handle deleted images
         deleted_images = self.request.data.get('deletedImages', [])
         try:
             deleted_image_ids = [int(image_id) for image_id in deleted_images]
         except ValueError as e:
-        # Handle the case where a non-integer value is in deletedImages
-        # You might want to log the error for debugging
             print(f"Error converting to int: {e}")
             deleted_image_ids = []
 
-        for image_id in deleted_image_ids:
-            PostImage.objects.filter(post=serializer.instance, id=image_id).delete()
-
-         # Continue with the update
+        PostImage.objects.filter(post=serializer.instance, id__in=deleted_image_ids).delete()
         serializer.save()
+
 
 
 
