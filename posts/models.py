@@ -38,9 +38,8 @@ class Post(models.Model):
         return f'{self.id} {self.title}'
 
 class PostImage(models.Model):
-    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='post_images/')
-    # You can add more fields if needed, e.g., image description, position, etc.
 
     def __str__(self):
         return self.post.title + ' Image'
