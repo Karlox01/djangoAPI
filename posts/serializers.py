@@ -48,3 +48,6 @@ class PostSerializer(serializers.ModelSerializer):
             'like_id', 'likes_count', 'comments_count',
             'images',  # Include the nested serializer for images
         ]
+        extra_kwargs = {
+        'images': {'read_only': True},
+    }

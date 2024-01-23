@@ -47,26 +47,24 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         likes_count=Count('likes', distinct=True),
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
-    
+
     def perform_update(self, serializer):
-        # Handle deleted images
+    # Handle deleted images
         deleted_images = self.request.data.get('deletedImages', [])
 
-        if deleted_images:
-            # Convert image IDs to integers
-            deleted_image_ids = [int(image_id) for image_id in deleted_images]
+    try:
+        deleted_image_ids = [int(image_id) for image_id in deleted_images]
+    except ValueError as e:
+        # Handle the case where a non-integer value is in deletedImages
+        # You might want to log the error for debugging
+        print(f"Error converting to int: {e}")
+        deleted_image_ids = []
 
-            # Get the current images related to the post
-            current_images = PostImage.objects.filter(post=serializer.instance)
+    for image_id in deleted_image_ids:
+        PostImage.objects.filter(post=serializer.instance, id=image_id).delete()
 
-            # Delete the images that are marked for deletion
-            for image in current_images:
-                if image.id in deleted_image_ids:
-                    image.delete()
-
-        # Continue with the update
-        serializer.save()
-
+    # Continue with the update
+    serializer.save()
 
 
 
