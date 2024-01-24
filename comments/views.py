@@ -12,7 +12,10 @@ class CommentList(generics.ListCreateAPIView):
     filterset_fields = ['post']
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        comment = serializer.save(owner=self.request.user)
+        images_data = self.request.data.getlist('images')
+        for image_data in images_data:
+            Image.objects.create(comment=comment, image=image_data)
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
