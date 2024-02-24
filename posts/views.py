@@ -48,23 +48,19 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         comments_count=Count('comment', distinct=True)
     ).order_by('-created_at')
 
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-    queryset = Post.objects.annotate(
-        likes_count=Count('likes', distinct=True),
-        comments_count=Count('comment', distinct=True)
-    ).order_by('-created_at')
-
     def perform_update(self, serializer):
         deleted_images = self.request.data.get('deletedImages', [])
+
         try:
             deleted_image_ids = [int(image_id) for image_id in deleted_images]
         except ValueError as e:
             print(f"Error converting to int: {e}")
             deleted_image_ids = []
 
-        PostImage.objects.filter(post=serializer.instance, id__in=deleted_image_ids).delete()
+        # Delete images only if there are any specified
+        if deleted_image_ids:
+            PostImage.objects.filter(post=serializer.instance, id__in=deleted_image_ids).delete()
+
         serializer.save()
 
 
