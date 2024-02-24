@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.http import Http404
 from rest_framework import generics, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
@@ -89,7 +90,7 @@ class DeletePostImage(generics.DestroyAPIView):
             print("Related images before disconnection:", post_instance.images.all())
 
             # Clear the specific related image from the post_instance.images relationship
-            post_instance.images.remove(instance)
+            post_instance.images.remove(instance)  # <-- Use remove on the related manager
 
             deleted_image_id = instance.id
             print("Disconnected image with ID:", deleted_image_id)
