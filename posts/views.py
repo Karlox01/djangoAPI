@@ -74,9 +74,11 @@ class DeletePostImage(generics.DestroyAPIView):
         try:
             instance = self.get_object()
             deleted_image_id = instance.id
+            print("Deleting image with ID:", deleted_image_id)
             self.perform_destroy(instance)
             return Response({'deleted_image_id': deleted_image_id}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
+            print("Error deleting image:", str(e))
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
