@@ -70,6 +70,14 @@ class DeletePostImage(generics.DestroyAPIView):
     serializer_class = PostImageSerializer
     permission_classes = []  
 
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        image_id = self.kwargs.get('image_id')
+        try:
+            return PostImage.objects.get(post__id=pk, id=image_id)
+        except PostImage.DoesNotExist:
+            raise Http404
+
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
@@ -80,8 +88,8 @@ class DeletePostImage(generics.DestroyAPIView):
             print("Post instance:", post_instance)
             print("Related images before disconnection:", post_instance.images.all())
 
-            # Clear all related images from the post_instance.images relationship
-            post_instance.images.clear()
+            # Clear the specific related image from the post_instance.images relationship
+            post_instance.images.remove(instance)
 
             deleted_image_id = instance.id
             print("Disconnected image with ID:", deleted_image_id)
