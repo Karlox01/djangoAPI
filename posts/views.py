@@ -2,6 +2,7 @@ from django.db.models import Count
 from rest_framework import generics, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from api_main.permissions import IsOwnerOrReadOnly
 from .models import Post, PostImage
 from .serializers import PostSerializer, PostImageSerializer
@@ -64,16 +65,17 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
         serializer.save()
 
-class DeletePostImage(generics.DestroyAPIView):
+class DeletePostImage(APIView):
     queryset = PostImage.objects.all()
     serializer_class = PostImageSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Adjust permissions as needed
+    permission_classes = []  
 
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
+            deleted_image_id = instance.id  
             self.perform_destroy(instance)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'deleted_image_id': deleted_image_id}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
