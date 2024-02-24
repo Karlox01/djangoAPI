@@ -75,8 +75,8 @@ class DeletePostImage(generics.DestroyAPIView):
             instance = self.get_object()
             post_instance = instance.post
 
-            # Remove the image from the post_instance.images relationship
-            post_instance.images.remove(instance)
+            # Clear all related images from the post_instance.images relationship
+            post_instance.images.clear()
 
             deleted_image_id = instance.id
             print("Disconnecting image with ID:", deleted_image_id)
