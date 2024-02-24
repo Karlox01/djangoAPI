@@ -65,7 +65,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
         serializer.save()
 
-class DeletePostImage(APIView):
+class DeletePostImage(generics.DestroyAPIView):
     queryset = PostImage.objects.all()
     serializer_class = PostImageSerializer
     permission_classes = []  
@@ -73,7 +73,7 @@ class DeletePostImage(APIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-            deleted_image_id = instance.id  
+            deleted_image_id = instance.id
             self.perform_destroy(instance)
             return Response({'deleted_image_id': deleted_image_id}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
