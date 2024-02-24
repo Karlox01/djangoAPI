@@ -73,6 +73,8 @@ class DeletePostImage(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
+            post_instance = instance.post
+            post_instance.images.remove(instance)
             deleted_image_id = instance.id
             print("Deleting image with ID:", deleted_image_id)
             self.perform_destroy(instance)
