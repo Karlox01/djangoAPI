@@ -6,7 +6,7 @@ from likes.models import Like
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
-        fields = ['image']
+        fields = ['id', 'image']
 
 
 class PostSerializer(serializers.ModelSerializer):
