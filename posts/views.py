@@ -57,7 +57,6 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         try:
             deleted_image_ids = [int(image_id) for image_id in deleted_images]
         except ValueError as e:
-            print(f"Error converting to int: {e}")
             deleted_image_ids = []
 
         # Delete images only if there are any specified
@@ -87,7 +86,6 @@ class DeletePostImage(generics.DestroyAPIView):
 
             return Response({'disconnected_image_id': deleted_image_id}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
-            print("Error disconnecting image:", str(e))
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
