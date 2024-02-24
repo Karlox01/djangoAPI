@@ -82,21 +82,8 @@ class DeletePostImage(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
-            post_instance = instance.post
-
-            # Print information for debugging
-            print("Requesting user:", request.user)
-            print("Post instance:", post_instance)
-            print("Related images before disconnection:", post_instance.images.all())
-
-            # Clear the specific related image from the post_instance.images relationship
-            post_instance.images.remove(instance)  # <-- Use remove on the related manager
-
             deleted_image_id = instance.id
-            print("Disconnected image with ID:", deleted_image_id)
-
-            # Print related images after disconnection for verification
-            print("Related images after disconnection:", post_instance.images.all())
+            instance.delete()  # Directly delete the PostImage instance
 
             return Response({'disconnected_image_id': deleted_image_id}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
