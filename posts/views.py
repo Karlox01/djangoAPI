@@ -52,16 +52,11 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     ).order_by('-created_at')
 
     def perform_update(self, serializer):
-        deleted_images = self.request.data.get('deletedImages', [])
+        new_images = self.request.data.getlist('images', [])
 
-        try:
-            deleted_image_ids = [int(image_id) for image_id in deleted_images]
-        except ValueError as e:
-            deleted_image_ids = []
-
-        # Delete images only if there are any specified
-        if deleted_image_ids:
-            PostImage.objects.filter(post=serializer.instance, id__in=deleted_image_ids).delete()
+        # Handle new images
+        for new_image_data in new_images:
+            PostImage.objects.create(post=serializer.instance, image=new_image_data)
 
         serializer.save()
 
