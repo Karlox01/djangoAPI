@@ -65,14 +65,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = ['8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'), '*']
+ALLOWED_HOSTS = ['8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'),]
 CSRF_TRUSTED_ORIGINS = ['https://8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'https://api-finalproject-2c3881ff5b7f.herokuapp.com/']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -100,7 +99,6 @@ INSTALLED_APPS = [
 ]
 SITE_ID = 1
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # Make sure it comes first
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -192,10 +190,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_URL = 'static/'
+
+
 
 
 
