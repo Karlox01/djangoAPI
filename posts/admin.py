@@ -1,5 +1,16 @@
 from django.contrib import admin
+from profiles.models import Profile
 
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    #  existing Profile admin configurations
+
+    def user_posts(self, obj):
+        return "\n".join([str(post) for post in obj.owner.posts.all()])
+
+    user_posts.short_description = "User Posts"
+
+# Import the Post and PostImage models
 from .models import Post, PostImage
 
 @admin.register(Post)
