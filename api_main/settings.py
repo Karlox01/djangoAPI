@@ -63,7 +63,7 @@ REST_AUTH_SERIALIZERS = {
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = ['8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'),]
 CSRF_TRUSTED_ORIGINS = ['https://8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'https://api-finalproject-2c3881ff5b7f.herokuapp.com/']
@@ -101,9 +101,9 @@ INSTALLED_APPS = [
 SITE_ID = 1
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Make sure it comes first
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
