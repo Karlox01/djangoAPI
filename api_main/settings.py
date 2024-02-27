@@ -63,7 +63,7 @@ REST_AUTH_SERIALIZERS = {
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'DEV' in os.environ
+DEBUG = False
 
 ALLOWED_HOSTS = ['8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'localhost', os.environ.get('ALLOWED_HOST'),]
 CSRF_TRUSTED_ORIGINS = ['https://8000-karlox01-djangoapi-rifyo0aylbk.ws-eu107.gitpod.io', 'https://api-finalproject-2c3881ff5b7f.herokuapp.com/']
